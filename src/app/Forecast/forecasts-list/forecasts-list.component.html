@@ -1,0 +1,22 @@
+<div>
+  <div class="panel panel-default">
+    <ng-container *ngIf="forecast$ | async as forecastList">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          5-day forecast for {{ forecastList?.city.name }}
+        </h3>
+      </div>
+      <ul class="list-group">
+        <li
+          *ngFor="let dailyForecast of forecastList?.list"
+          class="list-group-item"
+        >
+          <app-forecast-displayer
+            [forecast]="dailyForecast"
+          ></app-forecast-displayer>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</div>
+<button class="btn btn-success" [routerLink]="'/'">< Back to main page</button>
