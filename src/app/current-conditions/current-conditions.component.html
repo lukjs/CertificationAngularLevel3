@@ -3,10 +3,10 @@
     <div
       *ngFor="let location of currentConditions"
       class="well flex"
-      (click)="showForecast(location.zip)"
+      (click)="showForecast(location.location.zipcode)"
     >
       <div>
-        <h3>{{ location.data.name }} ({{ location.zip }})</h3>
+        <h3>{{ location.data.name }} ({{ location.location.zipcode }})</h3>
         <h4>Current conditions: {{ location.data.weather[0].main }}</h4>
         <h4>Temperatures today:</h4>
         <p>
