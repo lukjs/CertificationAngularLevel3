@@ -1,8 +1,14 @@
 import { Component } from "@angular/core";
-import { WeatherData, WeatherService } from "../weather.service";
-import { LocationService } from "../location.service";
 import { Router } from "@angular/router";
+
 import { Observable } from "rxjs";
+import {
+  WeatherData,
+  WeatherLocation,
+} from "shared/models";
+
+import { LocationService } from "../location.service";
+import { WeatherService } from "../weather.service";
 
 @Component({
   selector: "app-current-conditions",
@@ -14,12 +20,14 @@ export class CurrentConditionsComponent {
 
   constructor(private weatherService: WeatherService, private locationService: LocationService, private router: Router) {
     this.currentConditions$ = this.weatherService.currentConditions;
-
-    this.weatherService.currentConditions.subscribe((d) => console.log("je sub jai ", d));
   }
 
-  showForecast(zipcode: string) {
-    console.log("je recois zipcode", zipcode);
-    this.router.navigate(["/forecast", zipcode]);
+  showForecast(location: WeatherLocation) {
+    this.router.navigate(["/forecast", location.country.code, location.zipcode]);
+  }
+
+  removeLocation(event: Event, location: WeatherLocation) {
+    event.stopPropagation();
+    this.locationService.removeLocation(location);
   }
 }

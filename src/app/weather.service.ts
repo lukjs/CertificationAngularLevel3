@@ -1,16 +1,26 @@
-import { Injectable, OnDestroy } from "@angular/core";
-import { BehaviorSubject, interval, Observable, Subject, timer, zip } from "rxjs";
-import { switchMap, takeUntil, tap } from "rxjs/operators";
-
 import { HttpClient } from "@angular/common/http";
+import {
+  Injectable,
+  OnDestroy,
+} from "@angular/core";
+
+import {
+  BehaviorSubject,
+  interval,
+  Observable,
+  Subject,
+  zip,
+} from "rxjs";
+import {
+  switchMap,
+  takeUntil,
+  tap,
+} from "rxjs/operators";
 import { MessagerieService } from "services/messagerie.service";
-
-export class WeatherLocation {
-  zipcode?: string;
-  country?: string;
-}
-
-export class WeatherData {}
+import {
+  WeatherData,
+  WeatherLocation,
+} from "shared/models";
 
 export class WeatherEntry {
   location: WeatherLocation;
@@ -63,8 +73,9 @@ export class WeatherService implements OnDestroy {
   }
 
   getCurrentConditionsOfLocation(location: WeatherLocation): Observable<WeatherData> {
+    this.messagerieService.addMessage({ content: `Getting weather data for ${location.zipcode}, ${location.country.name}` });
     return this.http
-      .get(`${WeatherService.URL}/weather?zip=${location.zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+      .get(`${WeatherService.URL}/weather?zip=${location.zipcode},${location.country.code}&units=imperial&APPID=${WeatherService.APPID}`)
       .pipe(tap((data) => this._currentConditions.set(location, data)));
   }
 
@@ -74,5 +85,6 @@ export class WeatherService implements OnDestroy {
 
   removeCurrentConditions(location: WeatherLocation) {
     this._currentConditions.delete(location);
+    this._currentConditionsSubject.next(this.currentConditionsAsEntries);
   }
 }

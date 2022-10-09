@@ -1,7 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+
 import { Observable } from "rxjs";
-import { ForecastModule } from "./forecast.module";
+import { WeatherLocation } from "shared/models";
+import { ForecastData } from "shared/models/ForecastData";
 
 @Injectable()
 export class ForecastService {
@@ -10,10 +12,10 @@ export class ForecastService {
 
   constructor(private http: HttpClient) {}
 
-  getForecast(zipcode: string): Observable<any> {
+  getForecast(location: WeatherLocation): Observable<ForecastData> {
     // Here we make a request to get the forecast data from the API. Note the use of backticks and an expression to insert the zipcode
-    return this.http.get(
-      `${ForecastService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${ForecastService.APPID}`
+    return this.http.get<ForecastData>(
+      `${ForecastService.URL}/forecast/daily?zip=${location.zipcode},${location.country.code}&units=imperial&cnt=5&APPID=${ForecastService.APPID}`
     );
   }
 }

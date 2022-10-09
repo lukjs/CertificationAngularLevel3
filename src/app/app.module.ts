@@ -12,15 +12,19 @@ import { CurrentConditionsComponent } from "./current-conditions/current-conditi
 import { LocationService } from "./location.service";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { WeatherService } from "./weather.service";
-import { ZipcodeEntryComponent } from "./zipcode-entry/zipcode-entry.component";
+import { ZipcodeEntryComponent } from "./location-form/zipcode-entry/zipcode-entry.component";
 import { SharedModule } from "shared/shared.module";
+import { CountryEntryComponent } from "./location-form/country-entry/country-entry.component";
+import { LocationFormComponent } from "./location-form/location-form.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     ZipcodeEntryComponent,
+    CountryEntryComponent,
     CurrentConditionsComponent,
     MainPageComponent,
+    LocationFormComponent,
   ],
   imports: [
     BrowserModule,

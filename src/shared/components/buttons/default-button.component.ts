@@ -1,9 +1,18 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+} from "@angular/core";
+
 import { timer } from "rxjs";
 
 @Component({
   selector: "app-default-button",
-  template: `<button (click)="triggerAction()">
+  template: `<button (click)="triggerAction()" [disabled]="disabled" [class.disabled]="disabled">
     <ng-container *ngTemplateOutlet="currentTemplate"> </ng-container>
   </button> `,
   styles: [
@@ -15,12 +24,21 @@ import { timer } from "rxjs";
         font-weight: bold;
         padding: 6px 21px;
         border: none;
+        cursor: pointer;
+      }
+      .disabled {
+        cursor: default;
+        background-color: grey;
+        color: white;
       }
     `,
   ],
 })
-export class DefaultButtonComponent {
+export class DefaultButtonComponent implements OnChanges {
   action$ = timer(2000);
+
+  @Input()
+  disabled = false;
 
   @Input()
   initialTemplate: TemplateRef<any>;
@@ -28,6 +46,8 @@ export class DefaultButtonComponent {
   workingTemplate: TemplateRef<any>;
   @Input()
   doneTemplate: TemplateRef<any>;
+  @Input()
+  disabledTemplate: TemplateRef<any>;
 
   @Output()
   clicked = new EventEmitter<void>();
@@ -35,7 +55,17 @@ export class DefaultButtonComponent {
   currentTemplate: TemplateRef<any>;
 
   ngOnInit() {
-    this.currentTemplate = this.initialTemplate;
+    this.switchDisabledOrInitial();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["disabled"]) {
+      this.switchDisabledOrInitial();
+    }
+  }
+
+  switchDisabledOrInitial() {
+    this.currentTemplate = this.disabled ? this.disabledTemplate : this.initialTemplate;
   }
 
   triggerAction() {

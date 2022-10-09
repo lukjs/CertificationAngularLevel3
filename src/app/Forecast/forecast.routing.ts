@@ -1,5 +1,9 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import {
+  RouterModule,
+  Routes,
+} from "@angular/router";
+
 import { ForecastsListComponent } from "./forecasts-list/forecasts-list.component";
 
 const routes: Routes = [
@@ -9,7 +13,7 @@ const routes: Routes = [
     redirectTo: "list",
   },
   {
-    path: ":zipcode",
+    path: ":countrycode/:zipcode",
     component: ForecastsListComponent,
   },
 ];
