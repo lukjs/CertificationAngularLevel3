@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { interval, Observable, Subject, zip } from "rxjs";
+import { BehaviorSubject, interval, Observable, Subject, timer, zip } from "rxjs";
 import { switchMap, takeUntil, tap } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";
@@ -23,7 +23,7 @@ export class WeatherService implements OnDestroy {
   static APPID = "5a4b2d457ecbef9eb2a71e480b947604";
 
   private _currentConditions: Map<WeatherLocation, WeatherData> = new Map();
-  private _currentConditionsSubject = new Subject<WeatherEntry[]>();
+  private _currentConditionsSubject = new BehaviorSubject<WeatherEntry[]>([]);
 
   private get currentConditionsKeys() {
     return Array.from(this._currentConditions.keys());
@@ -40,12 +40,11 @@ export class WeatherService implements OnDestroy {
     return this._currentConditionsSubject.asObservable();
   }
 
-  destroy$: Subject<void>;
-  constructor(
-    private http: HttpClient,
-    private messagerieService: MessagerieService
-  ) {
-    interval(3000)
+  destroy$ = new Subject<void>();
+  constructor(private http: HttpClient, private messagerieService: MessagerieService) {
+    // no need to use timer to get an initial trigger
+    // because on init, several calls to getCurrentConditionsOfLocation are made from local storage loaded locations
+    interval(30000)
       .pipe(
         takeUntil(this.destroy$),
         tap(() =>
@@ -54,37 +53,23 @@ export class WeatherService implements OnDestroy {
             duration: 5000,
           })
         ),
-        switchMap(() =>
-          zip(
-            ...this.currentConditionsKeys.map((location) =>
-              this.getCurrentConditionsOfLocation(location)
-            )
-          )
-        )
+        switchMap(() => zip(...this.currentConditionsKeys.map((location) => this.getCurrentConditionsOfLocation(location))))
       )
-      .subscribe(() =>
-        this._currentConditionsSubject.next(this.currentConditionsAsEntries)
-      );
+      .subscribe(() => this._currentConditionsSubject.next(this.currentConditionsAsEntries));
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
   }
 
-  getCurrentConditionsOfLocation(
-    location: WeatherLocation
-  ): Observable<WeatherData> {
+  getCurrentConditionsOfLocation(location: WeatherLocation): Observable<WeatherData> {
     return this.http
-      .get(
-        `${WeatherService.URL}/weather?zip=${location.zipcode},us&units=imperial&APPID=${WeatherService.APPID}`
-      )
+      .get(`${WeatherService.URL}/weather?zip=${location.zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
       .pipe(tap((data) => this._currentConditions.set(location, data)));
   }
 
   addCurrentConditions(location: WeatherLocation): void {
-    this.getCurrentConditionsOfLocation(location).subscribe(() =>
-      this._currentConditionsSubject.next(this.currentConditionsAsEntries)
-    );
+    this.getCurrentConditionsOfLocation(location).subscribe(() => this._currentConditionsSubject.next(this.currentConditionsAsEntries));
   }
 
   removeCurrentConditions(location: WeatherLocation) {
