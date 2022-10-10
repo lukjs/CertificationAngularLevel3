@@ -11,6 +11,8 @@ import {
 import { Observable } from "rxjs";
 import { delay, tap } from "rxjs/operators";
 
+// Inspired by : https://blog.angulartraining.com/how-to-pass-a-custom-template-to-an-angular-component-53592d634a47
+
 @Component({
   selector: "app-default-button",
   template: `
