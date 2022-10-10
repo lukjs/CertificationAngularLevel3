@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { throwError } from "rxjs";
+import { of } from "rxjs";
 import { tap } from "rxjs/operators";
 
 import { WeatherService } from "@app.location";
@@ -24,7 +24,10 @@ export class LocationService {
 
   addLocation(location: WeatherLocation) {
     if (this.locations.find((_loc) => compareLocation(_loc, location))) {
-      return throwError("");
+      this.messagerieService.addMessage({
+        content: `This location already exists`,
+      });
+      return of("Already exist");
     }
     this.locations.push(location);
     localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
