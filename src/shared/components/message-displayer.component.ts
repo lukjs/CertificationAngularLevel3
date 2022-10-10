@@ -1,7 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { Message, MessagerieService } from "@services";
+import {
+  Component,
+  OnInit,
+} from "@angular/core";
+
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
+import {
+  Message,
+  MessagerieService,
+} from "@services";
 
 @Component({
   selector: "app-message-displayer",
@@ -12,8 +20,7 @@ import { map } from "rxjs/operators";
         *ngFor="let message of messages$ | async"
         [ngStyle]="{
           color: message.color ?? 'black',
-          'background-color':
-            message.backgroundColor ?? ' rgb(132 170 217 / 35%)'
+          'background-color': message.backgroundColor ?? ' rgb(132 170 217 / 35%)'
         }"
       >
         {{ message.content }}

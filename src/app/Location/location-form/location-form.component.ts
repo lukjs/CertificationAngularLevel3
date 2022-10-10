@@ -1,21 +1,17 @@
 import { Component } from "@angular/core";
+
+import { Subject } from "rxjs";
+
 import { LocationService } from "@app.location";
 import { Country } from "@models";
-import { of, Subject } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { MessagerieService } from "@services";
 
 @Component({
   selector: "app-location-form",
   template: `<div class="location-form">
     <div class="inputs">
-      <app-zipcode-entry
-        [zipcode]="zipcode"
-        (zipcodeChange)="zipcode = $event"
-        style="margin-right: 2em"
-      >
-      </app-zipcode-entry>
-      <app-country-entry (countryChange)="country = $event">
-      </app-country-entry>
+      <app-zipcode-entry [zipcode]="zipcode" (zipcodeChange)="zipcode = $event" style="margin-right: 2em"> </app-zipcode-entry>
+      <app-country-entry (countryChange)="country = $event"> </app-country-entry>
     </div>
     <app-location-save-button
       (clicked)="addLocation()"
@@ -47,24 +43,30 @@ export class LocationFormComponent {
   actionComplete$ = this.actionCompleteSub$.asObservable();
 
   get isDisabled() {
-    return Boolean(
-      !this.zipcode || !this.country || !this.country.code || !this.country.name
-    );
+    return Boolean(!this.zipcode || !this.country || !this.country.code || !this.country.name);
   }
 
-  constructor(private service: LocationService) {}
+  constructor(private service: LocationService, private messagerieService: MessagerieService) {}
 
   addLocation() {
+    this.messagerieService.addMessage({ content: `Trying to add location ${this.zipcode}, ${this.country.name}` });
     this.service
       .addLocation({
         zipcode: this.zipcode,
         country: this.country,
       })
-      .pipe(
-        catchError((_) => {
-          return of();
-        })
-      )
-      .subscribe({ complete: () => this.actionCompleteSub$.next() });
+      .subscribe({
+        error: (err) => {
+          this.service.removeLocation({ zipcode: this.zipcode, country: this.country });
+          this.messagerieService.addMessage({
+            content: `Error: no data found, maybe you're requesting incorrect location`,
+            backgroundColor: "red",
+            color: "white",
+            delay: 200,
+          });
+          this.actionCompleteSub$.next();
+        },
+        complete: () => this.actionCompleteSub$.next(),
+      });
   }
 }

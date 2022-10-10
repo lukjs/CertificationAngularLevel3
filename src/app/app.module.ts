@@ -1,15 +1,16 @@
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
-
-import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ServiceWorkerModule } from "@angular/service-worker";
+
 import { AppComponent } from "app/app.component";
 import { AppRouting } from "app/app.routing";
-import { SharedModule } from "@shared";
-import { MessagerieService } from "@services";
+
 import { environment } from "@env";
+import { ServicesModule } from "@services";
+import { SharedModule } from "@shared";
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,8 +24,9 @@ import { environment } from "@env";
       enabled: environment.production,
     }),
     SharedModule,
+    ServicesModule,
   ],
-  providers: [MessagerieService],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

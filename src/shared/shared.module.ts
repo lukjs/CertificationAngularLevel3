@@ -1,10 +1,10 @@
 import { NgModule } from "@angular/core";
+
 import { SharedDirectiveModule } from "@directives";
-import { ServicesModule } from "@services";
 import { SharedComponentsModule } from "@shared/components";
 
 @NgModule({
-  imports: [SharedComponentsModule, SharedDirectiveModule, ServicesModule],
+  imports: [SharedComponentsModule, SharedDirectiveModule],
   exports: [SharedComponentsModule, SharedDirectiveModule],
   declarations: [],
   providers: [],

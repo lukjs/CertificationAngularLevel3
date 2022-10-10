@@ -1,9 +1,14 @@
 import { Injectable } from "@angular/core";
-import { WeatherService } from "@app.location";
-import { compareLocation, WeatherLocation } from "@models";
-import { MessagerieService } from "@services";
-import { Observable, throwError } from "rxjs";
+
+import { throwError } from "rxjs";
 import { tap } from "rxjs/operators";
+
+import { WeatherService } from "@app.location";
+import {
+  compareLocation,
+  WeatherLocation,
+} from "@models";
+import { MessagerieService } from "@services";
 
 export const LOCATIONS: string = "locations";
 
@@ -11,14 +16,10 @@ export const LOCATIONS: string = "locations";
 export class LocationService {
   locations: WeatherLocation[] = [];
 
-  constructor(
-    private weatherService: WeatherService,
-    private messagerieService: MessagerieService
-  ) {
+  constructor(private weatherService: WeatherService, private messagerieService: MessagerieService) {
     let locString = localStorage.getItem(LOCATIONS);
     if (locString) this.locations = JSON.parse(locString);
-    for (let loc of this.locations)
-      this.weatherService.addCurrentConditions(loc).subscribe();
+    for (let loc of this.locations) this.weatherService.addCurrentConditions(loc).subscribe();
   }
 
   addLocation(location: WeatherLocation) {
@@ -38,9 +39,7 @@ export class LocationService {
   }
 
   removeLocation(location: WeatherLocation) {
-    this.locations = this.locations.filter(
-      (_loc) => !compareLocation(_loc, location)
-    );
+    this.locations = this.locations.filter((_loc) => !compareLocation(_loc, location));
     localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
     this.weatherService.removeCurrentConditions(location);
     this.messagerieService.addMessage({

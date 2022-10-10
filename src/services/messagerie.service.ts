@@ -1,10 +1,16 @@
 import { Injectable } from "@angular/core";
+
+import {
+  BehaviorSubject,
+  timer,
+} from "rxjs";
+
 import { ServicesModule } from "./services.module";
-import { BehaviorSubject } from "rxjs";
 
 export interface Message {
   id?: number;
   content: string;
+  delay?: number;
   duration?: number;
   color?: string;
   backgroundColor?: string;
@@ -29,27 +35,25 @@ export class MessagerieService {
     return this._messages.asObservable();
   }
 
+  _addOrUpdateMessage(newMessage: Message, messages: Message[]) {
+    timer(newMessage.delay ?? 0).subscribe(() => {
+      this._timeouts.set(
+        newMessage.id,
+        setTimeout(() => this.removeMessage(newMessage), newMessage.duration ?? 3000)
+      );
+      this._messages.next(messages);
+    });
+  }
+
   addMessage(message: Message) {
     message.id = this.nextIndex;
-    this._timeouts.set(
-      message.id,
-      setTimeout(() => this.removeMessage(message), message.duration ?? 3000)
-    );
-    this._messages.next([...this.messagesValue, message]);
+    this._addOrUpdateMessage(message, [...this.messagesValue, message]);
     return message.id;
   }
 
   updateMessage(message: Message) {
     clearTimeout(this._timeouts.get(message.id));
-    this._timeouts.set(
-      message.id,
-      setTimeout(() => this.removeMessage(message), message.duration ?? 3000)
-    );
-
-    this._messages.next([
-      ...this.messagesValue.filter((m) => m.id !== message.id),
-      message,
-    ]);
+    this._addOrUpdateMessage(message, [...this.messagesValue.filter((m) => m.id !== message.id), message]);
   }
 
   removeMessage(message: Message) {
