@@ -8,35 +8,38 @@ import {
   TemplateRef,
 } from "@angular/core";
 
-import { timer } from "rxjs";
+import { Observable } from "rxjs";
+import { delay, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-default-button",
-  template: `<button (click)="triggerAction()" [disabled]="disabled" [class.disabled]="disabled">
-    <ng-container *ngTemplateOutlet="currentTemplate"> </ng-container>
-  </button> `,
+  template: `
+    <div
+      (click)="triggerAction()"
+      [class.disabled]="disabled"
+      [ngStyle]="buttonStyle"
+    >
+      <ng-container *ngTemplateOutlet="currentTemplate"> </ng-container>
+    </div>
+  `,
   styles: [
     `
+      div {
+        width: fit-content;
+        width: moz-fit-content;
+        cursor: pointer;
+      }
       button {
-        background-color: #d29119;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        padding: 6px 21px;
-        border: none;
         cursor: pointer;
       }
       .disabled {
         cursor: default;
-        background-color: grey;
-        color: white;
+        pointer-events: none;
       }
     `,
   ],
 })
 export class DefaultButtonComponent implements OnChanges {
-  action$ = timer(2000);
-
   @Input()
   disabled = false;
 
@@ -48,6 +51,17 @@ export class DefaultButtonComponent implements OnChanges {
   doneTemplate: TemplateRef<any>;
   @Input()
   disabledTemplate: TemplateRef<any>;
+
+  @Input()
+  actionComplete$: Observable<any> | null = null;
+
+  @Input()
+  workingStateMinDelay = 1000;
+  @Input()
+  doneStateMinDelay = 500;
+
+  @Input()
+  buttonStyle = {};
 
   @Output()
   clicked = new EventEmitter<void>();
@@ -65,12 +79,29 @@ export class DefaultButtonComponent implements OnChanges {
   }
 
   switchDisabledOrInitial() {
-    this.currentTemplate = this.disabled ? this.disabledTemplate : this.initialTemplate;
+    this.currentTemplate = this.disabled
+      ? this.disabledTemplate
+      : this.initialTemplate;
   }
 
   triggerAction() {
-    this.clicked.emit();
+    if (this.disabled) return;
+
+    this.disabled = true;
     this.currentTemplate = this.workingTemplate;
-    this.action$.subscribe(() => (this.currentTemplate = this.doneTemplate));
+
+    this.actionComplete$
+      ?.pipe(
+        delay(this.workingStateMinDelay),
+        tap(() => {
+          this.currentTemplate = this.doneTemplate;
+        }),
+        delay(this.doneStateMinDelay),
+        tap(() => (this.currentTemplate = this.initialTemplate)),
+        tap(() => (this.disabled = false))
+      )
+      ?.subscribe();
+
+    this.clicked.emit();
   }
 }

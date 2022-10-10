@@ -1,20 +1,15 @@
 import { NgModule } from "@angular/core";
-import {
-  RouterModule,
-  Routes,
-} from "@angular/router";
-
-import { ForecastsListComponent } from "./forecasts-list/forecasts-list.component";
+import { RouterModule, Routes } from "@angular/router";
+import { ForecastsListComponent, Forecast404Component } from "@app.forecast";
 
 const routes: Routes = [
   {
-    path: "",
-    pathMatch: "full",
-    redirectTo: "list",
-  },
-  {
     path: ":countrycode/:zipcode",
     component: ForecastsListComponent,
+  },
+  {
+    path: "**",
+    component: Forecast404Component,
   },
 ];
 

@@ -14,7 +14,22 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2016", "dom"],
     "paths": {
-      "@assets/*": ["assets/*"]
+      "@env": ["environments/environment"],
+      "@assets/*": ["assets/*"],
+      "@models": ["./shared/models/index"],
+      "@models/*": ["./shared/models/*"],
+      "@directives": ["./shared/directives/index"],
+      "@directives/*": ["./shared/directives/*"],
+      "@components": ["./shared/components/index"],
+      "@components/*": ["./shared/components/*"],
+      "@shared": ["./shared/index"],
+      "@shared/*": ["./shared/*"],
+      "@services": ["./services/index"],
+      "@services/*": ["./services/*"],
+      "@app.location": ["./app/Location/index"],
+      "@app.location/*": ["./app/Location/*"],
+      "@app.forecast": ["./app/Forecast/index"],
+      "@app.forecast/*": ["./app/Forecast/*"]
     }
   }
 }

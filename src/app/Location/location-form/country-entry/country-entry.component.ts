@@ -1,12 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-} from "@angular/core";
-
-import { Country } from "shared/models";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import COUNTRIES from "@assets/countries.json";
+import { Country } from "@models";
 
 @Component({
   selector: "app-country-entry",
@@ -18,7 +13,9 @@ import COUNTRIES from "@assets/countries.json";
     ></app-input-with-suggestions>`,
 })
 export class CountryEntryComponent {
+  @Input()
   country = "";
+
   suggestions = [];
 
   @Output()
@@ -28,6 +25,8 @@ export class CountryEntryComponent {
 
   valueChanged() {
     this.countryChange.emit(COUNTRIES.find((c) => c.name === this.country));
-    this.suggestions = COUNTRIES.filter((c) => c.name.toLowerCase().startsWith(this.country.toLowerCase())).map((c) => c.name);
+    this.suggestions = COUNTRIES.filter((c) =>
+      c.name.toLowerCase().startsWith(this.country.toLowerCase())
+    ).map((c) => c.name);
   }
 }

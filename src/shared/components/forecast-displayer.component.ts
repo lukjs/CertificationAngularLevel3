@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Forecast } from "app/Forecast/forecast.model";
+import { Component, Input } from "@angular/core";
+import { Forecast } from "@app.forecast";
 
 @Component({
   selector: "app-forecast-displayer",
@@ -24,6 +24,4 @@ import { Forecast } from "app/Forecast/forecast.model";
 export class ForecastDisplayerComponent {
   @Input()
   forecast: Forecast;
-
-  constructor() {}
 }

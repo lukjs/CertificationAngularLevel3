@@ -1,10 +1,8 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { Forecast, ForecastService } from "@app.forecast";
 
 import { Observable } from "rxjs";
-
-import { Forecast } from "../forecast.model";
-import { ForecastService } from "../forecast.service";
 
 @Component({
   selector: "app-forecasts-list",
@@ -20,7 +18,10 @@ export class ForecastsListComponent {
     route.params.subscribe((params) => {
       this.countrycode = params["countrycode"];
       this.zipcode = params["zipcode"];
-      this.forecast$ = this.forecastService.getForecast({ zipcode: this.zipcode, country: { code: this.countrycode, name: "" } });
+      this.forecast$ = this.forecastService.getForecast({
+        zipcode: this.zipcode,
+        country: { code: this.countrycode, name: "" },
+      });
     });
   }
 }

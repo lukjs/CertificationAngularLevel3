@@ -1,14 +1,17 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { SharedModule } from "shared/shared.module";
-import { ForecastRoutingModule } from "./forecast.routing";
-import { ForecastService } from "./forecast.service";
-import { ForecastsListComponent } from "./forecasts-list/forecasts-list.component";
+import {
+  Forecast404Component,
+  ForecastRoutingModule,
+  ForecastsListComponent,
+  ForecastService,
+} from "@app.forecast";
+import { SharedModule } from "@shared";
 
 @NgModule({
   imports: [CommonModule, ForecastRoutingModule, SharedModule],
   exports: [],
-  declarations: [ForecastsListComponent],
+  declarations: [ForecastsListComponent, Forecast404Component],
   providers: [ForecastService],
 })
 export class ForecastModule {}

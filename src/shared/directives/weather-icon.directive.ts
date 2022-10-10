@@ -1,5 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, Input } from "@angular/core";
-import { WeatherIconsService } from "services/weather-icons.service";
+import { WeatherIconsService } from "@services";
 
 @Directive({ selector: "[weatherIcon]" })
 export class WeatherIconDirective implements AfterViewInit {
