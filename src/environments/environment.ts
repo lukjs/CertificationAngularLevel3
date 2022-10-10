@@ -10,7 +10,7 @@ export const environment = {
       url: "https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/",
     },
     openweathermap: {
-      url: "http://api.openweathermap.org/data/2.5",
+      url: "https://api.openweathermap.org/data/2.5",
       appID: "5a4b2d457ecbef9eb2a71e480b947604",
     },
   },
