@@ -1,5 +1,8 @@
 import { ModuleWithProviders } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import {
+  RouterModule,
+  Routes,
+} from "@angular/router";
 
 const appRoutes: Routes = [
   {
@@ -9,20 +12,15 @@ const appRoutes: Routes = [
   },
   {
     path: "location",
-    loadChildren: () =>
-      import("./Location/location.module").then((m) => m.LocationModule),
+    loadChildren: () => import("./Location/location.module").then((m) => m.LocationModule),
   },
   {
     path: "forecast",
-    loadChildren: () =>
-      import("./Forecast/forecast.module").then((m) => m.ForecastModule),
+    loadChildren: () => import("./Forecast/forecast.module").then((m) => m.ForecastModule),
   },
   {
     path: "**",
     redirectTo: "location",
   },
 ];
-export const AppRouting: ModuleWithProviders<any> = RouterModule.forRoot(
-  appRoutes,
-  { relativeLinkResolution: "legacy" }
-);
+export const AppRouting: ModuleWithProviders<any> = RouterModule.forRoot(appRoutes, { relativeLinkResolution: "legacy", useHash: true });
